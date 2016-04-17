@@ -77,7 +77,8 @@
 //     [self.audioManager setOutputBlock:^(float *newdata, UInt32 numFrames, UInt32 thisNumChannels)
 //         {
 //             for (int i = 0; i < numFrames * thisNumChannels; i++) {
-//                 newdata[i] = (rand() % 100) / 100.0f / 2;
+////                 newdata[i] = (rand() % 100) / 100.0f / 2;
+//                 newdata[i] = 10.0f;
 //         }
 //     }];
     
@@ -98,29 +99,53 @@
 //        
 //    }];
     
+    // How would you find the amplitude from the current time?
+    // Where it is in respect to PI
+    // amplitude = f(t) = sin(t / inv_f * 2 * pi) = sin(t * frequency * 2 * pi)
+    // after inv_f, the argument inside sin should be 2 * pi
+    
+    // frequency = # sin waves in a second
+    // sin(0) = 0, sin(2 * pi) = 0
+    // inv_f = 1/frequency (time it takes to one wave to finish)
+    // sin(pi/2) = 1,
+    
+    
     // SIGNAL GENERATOR!
-//    __block float frequency = 2000.0;
-//    __block float phase = 0.0;
-//    [self.audioManager setOutputBlock:^(float *data, UInt32 numFrames, UInt32 numChannels)
-//     {
-//
-//         float samplingRate = wself.audioManager.samplingRate;
-//         for (int i=0; i < numFrames; ++i)
+    __block float frequency = 500.0;
+    __block float phase = 0.0;
+    __block float time = 0.0;
+    
+    [self.audioManager setOutputBlock:^(float *data, UInt32 numFrames, UInt32 numChannels)
+     {
+
+         float samplingRate = wself.audioManager.samplingRate;
+         for (int i=0; i < numFrames; ++i)
+         {
+             for (int iChannel = 0; iChannel < numChannels; ++iChannel) 
+             {
+                 float theta = time * frequency * M_PI * 2;
+                 data[i*numChannels + iChannel] = sin(theta); // amplitude
+             }
+             time += 1 / samplingRate;
+//             if(time> 1.0) time= -1;
+         }
+     }];
+    // samplingRate = # samples / second = 44100
+    // samplingRate / numFrames = # times the block runs / second
+    // numFrames = 512
+    
+//     [self.audioManager setOutputBlock:^(float *newdata, UInt32 numFrames, UInt32 thisNumChannels)
 //         {
-//             for (int iChannel = 0; iChannel < numChannels; ++iChannel) 
-//             {
-//                 float theta = phase * M_PI * 2;
-//                 data[i*numChannels + iChannel] = sin(theta);
-//             }
-//             phase += 1.0 / (samplingRate / frequency);
-//             if (phase > 1.0) phase = -1;
+//             for (int i = 0; i < numFrames * thisNumChannels; i++) {
+////                 newdata[i] = (rand() % 100) / 100.0f / 2;
+////                 newdata[i] = i*5;
 //         }
 //     }];
     
     
     // DALEK VOICE!
-    // (aka Ring Modulator)
-    
+//     (aka Ring Modulator)
+//    
 //    [self.audioManager setInputBlock:^(float *data, UInt32 numFrames, UInt32 numChannels)
 //     {
 //         wself.ringBuffer->AddNewInterleavedFloatData(data, numFrames, numChannels);
@@ -144,7 +169,7 @@
 //             if (phase > 1.0) phase = -1;
 //         }
 //     }];
-//    
+    
     
     // VOICE-MODULATED OSCILLATOR
     
@@ -176,7 +201,7 @@
     
     // AUDIO FILE READING OHHH YEAHHHH
     // ========================================    
-    NSURL *inputFileURL = [[NSBundle mainBundle] URLForResource:@"TLC" withExtension:@"mp3"];        
+    NSURL *inputFileURL = [[NSBundle mainBundle] URLForResource:@"TLC" withExtension:@"mp3"];
 
         self.fileReader = [[AudioFileReader alloc]
                            initWithAudioFileURL:inputFileURL 
@@ -184,14 +209,14 @@
                            numChannels:self.audioManager.numOutputChannels];
     
     [self.fileReader play];
-    self.fileReader.currentTime = 30.0;
+    self.fileReader.currentTime = 0.0;
     
     
-    [self.audioManager setOutputBlock:^(float *data, UInt32 numFrames, UInt32 numChannels)
-     {
-         [wself.fileReader retrieveFreshAudio:data numFrames:numFrames numChannels:numChannels];
-         NSLog(@"Time: %f", wself.fileReader.currentTime);
-     }];
+//    [self.audioManager setOutputBlock:^(float *data, UInt32 numFrames, UInt32 numChannels)
+//     {
+//         [wself.fileReader retrieveFreshAudio:data numFrames:numFrames numChannels:numChannels];
+//         NSLog(@"Time: %f", wself.fileReader.currentTime);
+//     }];
     
     // AUDIO FILE WRITING YEAH!
     // ========================================    
@@ -219,6 +244,17 @@
 
     // START IT UP YO
     [self.audioManager play];
+//    if([self.audioManager playing]) {
+//        NSLog(@"#$#$#$#$#$#$#$#$#$#playing");
+//    }
+//    [NSThread sleepForTimeInterval:2.0f];
+//    if(![self.audioManager playing]) {
+//        NSLog(@"Not playing22222");
+//    }
+//    [self.audioManager pause];
+//    if(![self.audioManager playing]) {
+//        NSLog(@"Not playing");
+//    }
 
 }
 
