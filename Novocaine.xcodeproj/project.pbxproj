@@ -9,6 +9,12 @@
 /* Begin PBXBuildFile section */
 		6BB59729198F7E20006AE4AE /* Default-568h@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 6BB59728198F7E20006AE4AE /* Default-568h@2x.png */; };
 		9AE2143E1768D0C60068A4DC /* AVFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 9AE2143D1768D0C60068A4DC /* AVFoundation.framework */; };
+		C85576911CCD5058009F4A29 /* 0.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = C85576901CCD5058009F4A29 /* 0.mp3 */; };
+		C85576931CCD506D009F4A29 /* 90.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = C85576921CCD506D009F4A29 /* 90.mp3 */; };
+		C85576951CCD509D009F4A29 /* 12.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = C85576941CCD509D009F4A29 /* 12.mp3 */; };
+		C85576971CCD50CA009F4A29 /* 78.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = C85576961CCD50CA009F4A29 /* 78.mp3 */; };
+		C85576991CCD51D8009F4A29 /* 78.wav in Resources */ = {isa = PBXBuildFile; fileRef = C85576981CCD51D8009F4A29 /* 78.wav */; };
+		C8B4B4941CC40740001F4845 /* Untitled.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = C8B4B4931CC40740001F4845 /* Untitled.mp3 */; };
 		FA0B92E9154ACB100079834E /* AudioFileReader.mm in Sources */ = {isa = PBXBuildFile; fileRef = FA0B92E8154ACB100079834E /* AudioFileReader.mm */; };
 		FA0B92EA154ACB100079834E /* AudioFileReader.mm in Sources */ = {isa = PBXBuildFile; fileRef = FA0B92E8154ACB100079834E /* AudioFileReader.mm */; };
 		FA2015DD154B02CC00F8D3AC /* TLC.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = FA2015DC154B02CC00F8D3AC /* TLC.mp3 */; };
@@ -46,6 +52,12 @@
 /* Begin PBXFileReference section */
 		6BB59728198F7E20006AE4AE /* Default-568h@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "Default-568h@2x.png"; path = "../Default-568h@2x.png"; sourceTree = "<group>"; };
 		9AE2143D1768D0C60068A4DC /* AVFoundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AVFoundation.framework; path = System/Library/Frameworks/AVFoundation.framework; sourceTree = SDKROOT; };
+		C85576901CCD5058009F4A29 /* 0.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; path = 0.mp3; sourceTree = "<group>"; };
+		C85576921CCD506D009F4A29 /* 90.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; path = 90.mp3; sourceTree = "<group>"; };
+		C85576941CCD509D009F4A29 /* 12.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; path = 12.mp3; sourceTree = "<group>"; };
+		C85576961CCD50CA009F4A29 /* 78.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; path = 78.mp3; sourceTree = "<group>"; };
+		C85576981CCD51D8009F4A29 /* 78.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = 78.wav; sourceTree = "<group>"; };
+		C8B4B4931CC40740001F4845 /* Untitled.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; path = Untitled.mp3; sourceTree = "<group>"; };
 		FA0B92E7154ACB100079834E /* AudioFileReader.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AudioFileReader.h; sourceTree = "<group>"; };
 		FA0B92E8154ACB100079834E /* AudioFileReader.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = AudioFileReader.mm; sourceTree = "<group>"; };
 		FA2015DC154B02CC00F8D3AC /* TLC.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; path = TLC.mp3; sourceTree = "<group>"; };
@@ -228,6 +240,12 @@
 		FA5526D4152A6452003D9601 /* Supporting Files */ = {
 			isa = PBXGroup;
 			children = (
+				C85576981CCD51D8009F4A29 /* 78.wav */,
+				C85576941CCD509D009F4A29 /* 12.mp3 */,
+				C85576921CCD506D009F4A29 /* 90.mp3 */,
+				C85576961CCD50CA009F4A29 /* 78.mp3 */,
+				C85576901CCD5058009F4A29 /* 0.mp3 */,
+				C8B4B4931CC40740001F4845 /* Untitled.mp3 */,
 				FA2015DC154B02CC00F8D3AC /* TLC.mp3 */,
 				6BB59728198F7E20006AE4AE /* Default-568h@2x.png */,
 				FA5526D5152A6452003D9601 /* Novocaine iOS Example-Info.plist */,
@@ -321,8 +339,14 @@
 				FA5526D8152A6452003D9601 /* InfoPlist.strings in Resources */,
 				FA5526E4152A6452003D9601 /* ViewController_iPhone.xib in Resources */,
 				FA5526E7152A6452003D9601 /* ViewController_iPad.xib in Resources */,
+				C85576951CCD509D009F4A29 /* 12.mp3 in Resources */,
 				6BB59729198F7E20006AE4AE /* Default-568h@2x.png in Resources */,
+				C85576971CCD50CA009F4A29 /* 78.mp3 in Resources */,
 				FA2015DE154B02CC00F8D3AC /* TLC.mp3 in Resources */,
+				C85576931CCD506D009F4A29 /* 90.mp3 in Resources */,
+				C85576991CCD51D8009F4A29 /* 78.wav in Resources */,
+				C8B4B4941CC40740001F4845 /* Untitled.mp3 in Resources */,
+				C85576911CCD5058009F4A29 /* 0.mp3 in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

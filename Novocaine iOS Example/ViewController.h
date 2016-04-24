@@ -32,6 +32,7 @@
 
 @property (nonatomic, strong) Novocaine *audioManager;
 @property (nonatomic, strong) AudioFileReader *fileReader;
+@property (nonatomic, strong) AudioFileReader *fileReader2;
 @property (nonatomic, strong) AudioFileWriter *fileWriter;
 
 @end

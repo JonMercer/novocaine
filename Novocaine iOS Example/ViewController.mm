@@ -111,25 +111,29 @@
     
     
     // SIGNAL GENERATOR!
-    __block float frequency = 500.0;
-    __block float phase = 0.0;
-    __block float time = 0.0;
-    
-    [self.audioManager setOutputBlock:^(float *data, UInt32 numFrames, UInt32 numChannels)
-     {
-
-         float samplingRate = wself.audioManager.samplingRate;
-         for (int i=0; i < numFrames; ++i)
-         {
-             for (int iChannel = 0; iChannel < numChannels; ++iChannel) 
-             {
-                 float theta = time * frequency * M_PI * 2;
-                 data[i*numChannels + iChannel] = sin(theta); // amplitude
-             }
-             time += 1 / samplingRate;
-//             if(time> 1.0) time= -1;
-         }
-     }];
+//    __block float frequency = 500.0;
+//    __block float frequency2 = 5000.0;
+//    __block float phase = 0.0;
+//    __block float time = 0.0;
+//    
+//    [self.audioManager setOutputBlock:^(float *data, UInt32 numFrames, UInt32 numChannels)
+//     {
+//
+//         float samplingRate = wself.audioManager.samplingRate;
+//         for (int i=0; i < numFrames; ++i)
+//         {
+//             for (int iChannel = 0; iChannel < numChannels; ++iChannel) 
+//             {
+//                 float theta = time * frequency * M_PI * 2;
+//                 float theta2 = time * frequency2 * M_PI * 2;
+//                 float amplitude = sin(theta);
+//                 float amplitude2 = sin(theta2);
+//                 data[i*numChannels + iChannel] = amplitude + amplitude2; // amplitude
+//             }
+//             time += 1 / samplingRate;
+////             if(time> 1.0) time= -1;
+//         }
+//     }];
     // samplingRate = # samples / second = 44100
     // samplingRate / numFrames = # times the block runs / second
     // numFrames = 512
@@ -201,22 +205,73 @@
     
     // AUDIO FILE READING OHHH YEAHHHH
     // ========================================    
-    NSURL *inputFileURL = [[NSBundle mainBundle] URLForResource:@"TLC" withExtension:@"mp3"];
+    NSURL *inputFileURL = [[NSBundle mainBundle] URLForResource:@"0" withExtension:@"mp3"];
+    NSURL *inputFileURL2 = [[NSBundle mainBundle] URLForResource:@"78" withExtension:@"mp3"];
 
         self.fileReader = [[AudioFileReader alloc]
                            initWithAudioFileURL:inputFileURL 
                            samplingRate:self.audioManager.samplingRate
                            numChannels:self.audioManager.numOutputChannels];
     
-    [self.fileReader play];
-    self.fileReader.currentTime = 0.0;
+    self.fileReader2 = [[AudioFileReader alloc]
+                       initWithAudioFileURL:inputFileURL2
+                       samplingRate:self.audioManager.samplingRate
+                       numChannels:self.audioManager.numOutputChannels];
     
+    [self.fileReader play];
+    [self.fileReader2 play];
+//    self.fileReader.currentTime = 0.0;
+//    self.fileReader2.currentTime = 0.0;
+    
+    
+    [self.audioManager setOutputBlock:^(float *data, UInt32 numFrames, UInt32 numChannels)
+     {
+         // numFrames = 512
+         // samplingFrequency = 44100
+         
+         // length of float *data is numChannels * numFrames.
+         float dataSum[numChannels * numFrames];
+
+         // retrieveFreshAudio: updates currentTime and feeds data
+         NSLog(@"Time1B: %f", wself.fileReader.currentTime);
+         [wself.fileReader retrieveFreshAudio:data numFrames:numFrames numChannels:numChannels];
+         NSLog(@"Time1A: %f", wself.fileReader.currentTime);
+         
+         for (int i=0; i < numFrames * numChannels; ++i)
+         {
+            dataSum[i] = data[i];
+         }
+
+         [wself.fileReader2 retrieveFreshAudio:data numFrames:numFrames numChannels:numChannels];
+          NSLog(@"Time2: %f", wself.fileReader2.currentTime);
+         
+         for (int i=0; i < numFrames * numChannels; ++i)
+         {
+             data[i] += dataSum[i];
+         }
+     }];
     
 //    [self.audioManager setOutputBlock:^(float *data, UInt32 numFrames, UInt32 numChannels)
 //     {
-//         [wself.fileReader retrieveFreshAudio:data numFrames:numFrames numChannels:numChannels];
-//         NSLog(@"Time: %f", wself.fileReader.currentTime);
+//         
+//         float samplingRate = wself.audioManager.samplingRate;
+//         for (int i=0; i < numFrames; ++i)
+//         {
+//             for (int iChannel = 0; iChannel < numChannels; ++iChannel)
+//             {
+//                 float theta = time * frequency * M_PI * 2;
+//                 float theta2 = time * frequency2 * M_PI * 2;
+//                 float amplitude = sin(theta);
+//                 float amplitude2 = sin(theta2);
+//                 data[i*numChannels + iChannel] = amplitude + amplitude2; // amplitude
+//             }
+//             time += 1 / samplingRate;
+//             //             if(time> 1.0) time= -1;
+//         }
 //     }];
+
+    
+    [self.audioManager play];
     
     // AUDIO FILE WRITING YEAH!
     // ========================================    
@@ -243,7 +298,7 @@
 //    };
 
     // START IT UP YO
-    [self.audioManager play];
+//    [self.audioManager play];
 //    if([self.audioManager playing]) {
 //        NSLog(@"#$#$#$#$#$#$#$#$#$#playing");
 //    }
