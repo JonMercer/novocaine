@@ -35,4 +35,6 @@
 @property (nonatomic, strong) AudioFileReader *fileReader2;
 @property (nonatomic, strong) AudioFileWriter *fileWriter;
 
+@property (nonatomic, strong) NSMutableArray *fileReaders;
+
 @end

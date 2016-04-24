@@ -49,6 +49,78 @@
     // Release any retained subviews of the main view.
 }
 
+- (void)playSound:(int)arraySize
+{
+    
+    __weak ViewController * wself = self;
+    
+    self.ringBuffer = new RingBuffer(32768, 2);
+    self.audioManager = [Novocaine audioManager];
+    [self.audioManager setOutputBlock:^(float *data, UInt32 numFrames, UInt32 numChannels)
+     {
+         // numFrames = 512
+         // samplingFrequency = 44100
+         // length of float *data is numChannels * numFrames.
+         float dataSum[numChannels * numFrames];
+         
+         for(int i = 0; i < arraySize; i++) {
+             //             [wself.fileReaders[i] retrieveFreshAudio:data numFrames:numFrames numChannels:numChannels];
+             [((AudioFileReader*)[wself.fileReaders objectAtIndex:i]) retrieveFreshAudio:data numFrames:numFrames numChannels:numChannels];
+             NSLog(@"Time: %f", ((AudioFileReader*)[wself.fileReaders objectAtIndex:i]).currentTime);
+             
+             if(i == 0) {
+                 for (int i=0; i < numFrames * numChannels; ++i)
+                 {
+                     dataSum[i] = data[i];
+                 }
+             } else {
+                 for (int i=0; i < numFrames * numChannels; ++i)
+                 {
+                     data[i] += dataSum[i];
+                 }
+             }
+         }
+     }];
+    [self.audioManager play];
+}
+
+- (void) initSounds
+{
+    __weak ViewController * wself = self;
+    
+    self.ringBuffer = new RingBuffer(32768, 2);
+    self.audioManager = [Novocaine audioManager];
+    
+    
+    NSArray *filesToPlay = @[@"0",
+                             @"12",
+                             @"78",
+                             @"90"];
+    
+    
+    
+    
+    self.fileReaders = [[NSMutableArray alloc]init];
+    
+    for(int i = 0; i< [filesToPlay count]; i ++) {
+        
+        NSURL *inputFileURL = [[NSBundle mainBundle] URLForResource:[NSString stringWithFormat:@"%@", filesToPlay[i]] withExtension:@"mp3"];
+        
+        //[inputURLs addObject:inputFileURL];
+        
+        AudioFileReader *fileReader = [[AudioFileReader alloc]
+                                       initWithAudioFileURL:inputFileURL
+                                       samplingRate:self.audioManager.samplingRate
+                                       numChannels:self.audioManager.numOutputChannels];
+        
+        [self.fileReaders addObject:fileReader];
+        
+        [((AudioFileReader*)[wself.fileReaders objectAtIndex:i]) play];
+    }
+    
+//    [self playSound:[filesToPlay count]];
+}
+
 - (void)viewWillAppear:(BOOL)animated
 {
     [super viewWillAppear:animated];
@@ -204,52 +276,78 @@
     
     
     // AUDIO FILE READING OHHH YEAHHHH
-    // ========================================    
-    NSURL *inputFileURL = [[NSBundle mainBundle] URLForResource:@"0" withExtension:@"mp3"];
-    NSURL *inputFileURL2 = [[NSBundle mainBundle] URLForResource:@"78" withExtension:@"mp3"];
+    // ========================================
+   [self initSounds];
+    for(int i = 0; i < 10; i++) {
+    [self playSound:4];
+    [NSThread sleepForTimeInterval:1.0f];
+    }
+    
+    for(int i = 0; i < 300; i++) {
+        [self playSound:4];
+        [NSThread sleepForTimeInterval:1.0f];
+    }
 
-        self.fileReader = [[AudioFileReader alloc]
-                           initWithAudioFileURL:inputFileURL 
+
+     /*
+    NSArray *filesToPlay = @[@"0",
+                             @"12",
+                             @"78",
+                             @"90"];
+    
+
+
+
+    self.fileReaders = [[NSMutableArray alloc]init];
+ 
+    for(int i = 0; i< [filesToPlay count]; i ++) {
+        
+        NSURL *inputFileURL = [[NSBundle mainBundle] URLForResource:[NSString stringWithFormat:@"%@", filesToPlay[i]] withExtension:@"mp3"];
+        
+        //[inputURLs addObject:inputFileURL];
+        
+        AudioFileReader *fileReader = [[AudioFileReader alloc]
+                           initWithAudioFileURL:inputFileURL
                            samplingRate:self.audioManager.samplingRate
                            numChannels:self.audioManager.numOutputChannels];
+        
+        [self.fileReaders addObject:fileReader];
+
+        [((AudioFileReader*)[wself.fileReaders objectAtIndex:i]) play];
+    }
+
+    [self playSound:[filesToPlay count]];
+
     
-    self.fileReader2 = [[AudioFileReader alloc]
-                       initWithAudioFileURL:inputFileURL2
-                       samplingRate:self.audioManager.samplingRate
-                       numChannels:self.audioManager.numOutputChannels];
-    
-    [self.fileReader play];
-    [self.fileReader2 play];
-//    self.fileReader.currentTime = 0.0;
-//    self.fileReader2.currentTime = 0.0;
-    
-    
+   
     [self.audioManager setOutputBlock:^(float *data, UInt32 numFrames, UInt32 numChannels)
      {
          // numFrames = 512
          // samplingFrequency = 44100
-         
          // length of float *data is numChannels * numFrames.
          float dataSum[numChannels * numFrames];
-
-         // retrieveFreshAudio: updates currentTime and feeds data
-         NSLog(@"Time1B: %f", wself.fileReader.currentTime);
-         [wself.fileReader retrieveFreshAudio:data numFrames:numFrames numChannels:numChannels];
-         NSLog(@"Time1A: %f", wself.fileReader.currentTime);
          
-         for (int i=0; i < numFrames * numChannels; ++i)
-         {
-            dataSum[i] = data[i];
-         }
-
-         [wself.fileReader2 retrieveFreshAudio:data numFrames:numFrames numChannels:numChannels];
-          NSLog(@"Time2: %f", wself.fileReader2.currentTime);
-         
-         for (int i=0; i < numFrames * numChannels; ++i)
-         {
-             data[i] += dataSum[i];
+         for(int i = 0; i < [filesToPlay count]; i++) {
+//             [wself.fileReaders[i] retrieveFreshAudio:data numFrames:numFrames numChannels:numChannels];
+             [((AudioFileReader*)[wself.fileReaders objectAtIndex:i]) retrieveFreshAudio:data numFrames:numFrames numChannels:numChannels];
+             NSLog(@"Time: %f", ((AudioFileReader*)[wself.fileReaders objectAtIndex:i]).currentTime);
+             
+             if(i == 0) {
+                 for (int i=0; i < numFrames * numChannels; ++i)
+                 {
+                     dataSum[i] = data[i];
+                 }
+             } else {
+                 for (int i=0; i < numFrames * numChannels; ++i)
+                 {
+                     data[i] += dataSum[i];
+                 }
+             }
          }
      }];
+    [self.audioManager play];
+     
+     */
     
 //    [self.audioManager setOutputBlock:^(float *data, UInt32 numFrames, UInt32 numChannels)
 //     {
@@ -271,7 +369,7 @@
 //     }];
 
     
-    [self.audioManager play];
+//    [self.audioManager play];
     
     // AUDIO FILE WRITING YEAH!
     // ========================================    
