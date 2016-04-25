@@ -62,24 +62,29 @@
          // samplingFrequency = 44100
          // length of float *data is numChannels * numFrames.
          float dataSum[numChannels * numFrames];
+         // initialize dataSum to 0
+         for(int i = 0; i < numChannels * numFrames; i++) {
+             dataSum[i] = 0.0f;
+         }
          
          for(int i = 0; i < arraySize; i++) {
-             //             [wself.fileReaders[i] retrieveFreshAudio:data numFrames:numFrames numChannels:numChannels];
-             [((AudioFileReader*)[wself.fileReaders objectAtIndex:i]) retrieveFreshAudio:data numFrames:numFrames numChannels:numChannels];
+             AudioFileReader *audioFilereader = (AudioFileReader*)[wself.fileReaders objectAtIndex:i];
+             [audioFilereader retrieveFreshAudio:data numFrames:numFrames numChannels:numChannels];
              NSLog(@"Time: %f", ((AudioFileReader*)[wself.fileReaders objectAtIndex:i]).currentTime);
-             
-             if(i == 0) {
-                 for (int i=0; i < numFrames * numChannels; ++i)
-                 {
-                     dataSum[i] = data[i];
-                 }
-             } else {
-                 for (int i=0; i < numFrames * numChannels; ++i)
-                 {
-                     data[i] += dataSum[i];
-                 }
+         
+            // just keep adding the values in data to dataSum
+
+             for (int j=0; j < numFrames * numChannels; ++j)
+             {
+                 dataSum[j] += data[j] * 0.01;
              }
+         } // for(int i = 0; i < arraySize; i++)
+         
+         for(int i = 0; i < numChannels * numFrames; i++) {
+             data[i] = dataSum[i];
          }
+
+
      }];
     [self.audioManager play];
 }
@@ -92,10 +97,105 @@
     self.audioManager = [Novocaine audioManager];
     
     
+//    NSArray *filesToPlay = @[@"0",
+//                             @"12",
+//                             @"78",
+//                             @"90"];
+    
     NSArray *filesToPlay = @[@"0",
+                             @"1",
+                             @"2",
+                             @"3",
+                             @"4",
+                             @"5",
+                             @"6",
+                             @"7",
+                             @"8",
+                             @"9",
+                             @"10",
+                             @"11",
                              @"12",
+                             @"13",
+                             @"14",
+                             @"15",
+                             @"16",
+                             @"17",
+                             @"18",
+                             @"19",
+                             @"20",
+                             @"21",
+                             @"22",
+                             @"23",
+                             @"24",
+                             @"25",
+                             @"26",
+                             @"27",
+                             @"28",
+                             @"29",
+                             @"30",
+                             @"31",
+                             @"32",
+                             @"33",
+                             @"34",
+                             @"35",
+                             @"36",
+                             @"37",
+                             @"38",
+                             @"39",
+                             @"40",
+                             @"41",
+                             @"42",
+                             @"43",
+                             @"44",
+                             @"45",
+                             @"46",
+                             @"47",
+                             @"48",
+                             @"49",
+                             @"50",
+                             @"51",
+                             @"52",
+                             @"53",
+                             @"54",
+                             @"55",
+                             @"56",
+                             @"57",
+                             @"58",
+                             @"59",
+                             @"60",
+                             @"61",
+                             @"62",
+                             @"63",
+                             @"64",
+                             @"65",
+                             @"66",
+                             @"67",
+                             @"68",
+                             @"69",
+                             @"70",
+                             @"71",
+                             @"72",
+                             @"73",
+                             @"74",
+                             @"75",
+                             @"76",
+                             @"77",
                              @"78",
+                             @"79",
+                             @"80",
+                             @"81",
+                             @"82",
+                             @"83",
+                             @"84",
+                             @"85",
+                             @"86",
+                             @"87",
+                             @"88",
+                             @"89",
                              @"90"];
+    
+    
+    
     
     
     
@@ -131,160 +231,23 @@
     self.audioManager = [Novocaine audioManager];
 
     
-    // Basic playthru example
-//    [self.audioManager setInputBlock:^(float *data, UInt32 numFrames, UInt32 numChannels) {
-//        float volume = 0.5;
-//        vDSP_vsmul(data, 1, &volume, data, 1, numFrames*numChannels);
-//        wself.ringBuffer->AddNewInterleavedFloatData(data, numFrames, numChannels);
-//    }];
-//    
-//    
-//    [self.audioManager setOutputBlock:^(float *outData, UInt32 numFrames, UInt32 numChannels) {
-//        wself.ringBuffer->FetchInterleavedData(outData, numFrames, numChannels);
-//    }];
-    
-    
-     // MAKE SOME NOOOOO OIIIISSSEEE
-    // ==================================================
-//     [self.audioManager setOutputBlock:^(float *newdata, UInt32 numFrames, UInt32 thisNumChannels)
-//         {
-//             for (int i = 0; i < numFrames * thisNumChannels; i++) {
-////                 newdata[i] = (rand() % 100) / 100.0f / 2;
-//                 newdata[i] = 10.0f;
-//         }
-//     }];
-    
-    
-    // MEASURE SOME DECIBELS!
-    // ==================================================
-//    __block float dbVal = 0.0;
-//    [self.audioManager setInputBlock:^(float *data, UInt32 numFrames, UInt32 numChannels) {
-//
-//        vDSP_vsq(data, 1, data, 1, numFrames*numChannels);
-//        float meanVal = 0.0;
-//        vDSP_meanv(data, 1, &meanVal, numFrames*numChannels);
-//
-//        float one = 1.0;
-//        vDSP_vdbcon(&meanVal, 1, &one, &meanVal, 1, 1, 0);
-//        dbVal = dbVal + 0.2*(meanVal - dbVal);
-//        printf("Decibel level: %f\n", dbVal);
-//        
-//    }];
-    
-    // How would you find the amplitude from the current time?
-    // Where it is in respect to PI
-    // amplitude = f(t) = sin(t / inv_f * 2 * pi) = sin(t * frequency * 2 * pi)
-    // after inv_f, the argument inside sin should be 2 * pi
-    
-    // frequency = # sin waves in a second
-    // sin(0) = 0, sin(2 * pi) = 0
-    // inv_f = 1/frequency (time it takes to one wave to finish)
-    // sin(pi/2) = 1,
-    
-    
-    // SIGNAL GENERATOR!
-//    __block float frequency = 500.0;
-//    __block float frequency2 = 5000.0;
-//    __block float phase = 0.0;
-//    __block float time = 0.0;
-//    
-//    [self.audioManager setOutputBlock:^(float *data, UInt32 numFrames, UInt32 numChannels)
-//     {
-//
-//         float samplingRate = wself.audioManager.samplingRate;
-//         for (int i=0; i < numFrames; ++i)
-//         {
-//             for (int iChannel = 0; iChannel < numChannels; ++iChannel) 
-//             {
-//                 float theta = time * frequency * M_PI * 2;
-//                 float theta2 = time * frequency2 * M_PI * 2;
-//                 float amplitude = sin(theta);
-//                 float amplitude2 = sin(theta2);
-//                 data[i*numChannels + iChannel] = amplitude + amplitude2; // amplitude
-//             }
-//             time += 1 / samplingRate;
-////             if(time> 1.0) time= -1;
-//         }
-//     }];
-    // samplingRate = # samples / second = 44100
-    // samplingRate / numFrames = # times the block runs / second
-    // numFrames = 512
-    
-//     [self.audioManager setOutputBlock:^(float *newdata, UInt32 numFrames, UInt32 thisNumChannels)
-//         {
-//             for (int i = 0; i < numFrames * thisNumChannels; i++) {
-////                 newdata[i] = (rand() % 100) / 100.0f / 2;
-////                 newdata[i] = i*5;
-//         }
-//     }];
-    
-    
-    // DALEK VOICE!
-//     (aka Ring Modulator)
-//    
-//    [self.audioManager setInputBlock:^(float *data, UInt32 numFrames, UInt32 numChannels)
-//     {
-//         wself.ringBuffer->AddNewInterleavedFloatData(data, numFrames, numChannels);
-//     }];
-//    
-//    __block float frequency = 100.0;
-//    __block float phase = 0.0;
-//    [self.audioManager setOutputBlock:^(float *data, UInt32 numFrames, UInt32 numChannels)
-//     {
-//         wself.ringBuffer->FetchInterleavedData(data, numFrames, numChannels);
-//         
-//         float samplingRate = wself.audioManager.samplingRate;
-//         for (int i=0; i < numFrames; ++i)
-//         {
-//             for (int iChannel = 0; iChannel < numChannels; ++iChannel) 
-//             {
-//                 float theta = phase * M_PI * 2;
-//                 data[i*numChannels + iChannel] *= sin(theta);
-//             }
-//             phase += 1.0 / (samplingRate / frequency);
-//             if (phase > 1.0) phase = -1;
-//         }
-//     }];
-    
-    
-    // VOICE-MODULATED OSCILLATOR
-    
-//    __block float magnitude = 0.0;
-//    [self.audioManager setInputBlock:^(float *data, UInt32 numFrames, UInt32 numChannels)
-//     {
-//         vDSP_rmsqv(data, 1, &magnitude, numFrames*numChannels);
-//     }];
-//    
-//    __block float frequency = 100.0;
-//    __block float phase = 0.0;
-//    [self.audioManager setOutputBlock:^(float *data, UInt32 numFrames, UInt32 numChannels)
-//     {
-//
-//         printf("Magnitude: %f\n", magnitude);
-//         float samplingRate = wself.audioManager.samplingRate;
-//         for (int i=0; i < numFrames; ++i)
-//         {
-//             for (int iChannel = 0; iChannel < numChannels; ++iChannel) 
-//             {
-//                 float theta = phase * M_PI * 2;
-//                 data[i*numChannels + iChannel] = magnitude*sin(theta);
-//             }
-//             phase += 1.0 / (samplingRate / (frequency));
-//             if (phase > 1.0) phase = -1;
-//         }
-//     }];
-    
     
     // AUDIO FILE READING OHHH YEAHHHH
     // ========================================
    [self initSounds];
-    for(int i = 0; i < 10; i++) {
-    [self playSound:4];
-    [NSThread sleepForTimeInterval:1.0f];
+//    [self playSound:30];
+    for(int i = 0; i < 100; i++) {
+    
+        // the argument should be an array of floats of lengh 91
+        // each float representing how loud we should play each sound
+        // 0 being minimum and 1 being maximum
+        
+    [self playSound:30];
+    [NSThread sleepForTimeInterval:0.5f];
     }
     
     for(int i = 0; i < 300; i++) {
-        [self playSound:4];
+        [self playSound:91];
         [NSThread sleepForTimeInterval:1.0f];
     }
 
